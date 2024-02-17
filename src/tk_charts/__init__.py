@@ -210,14 +210,14 @@ class DataViewport(Entity):
         self.width  = width
         self.height = height
 
-        self.x_scale_view.width = self.width
+        self.data_view.width  = self.width - self.y_scale_width
+        self.data_view.height = self.height - self.x_scale_height
+
+        self.x_scale_view.width  = self.width
         self.x_scale_view.height = self.x_scale_height
 
-        self.y_scale_view.width = self.y_scale_width
+        self.y_scale_view.width  = self.y_scale_width
         self.y_scale_view.height = self.height
-
-        self.data_view.width = self.width - self.y_scale_width
-        self.data_view.height = self.height - self.x_scale_height
 
     def update_x_scale(self, new_value: float):
         self.x_scale_view.update_scale(new_value)
@@ -278,3 +278,23 @@ class DataViewport(Entity):
             self.position.y + self.height,
             outline = 'grey'
         )
+
+class TkCharts(Frame):
+    def __init__(self, master, width: int, height: int):
+        super().__init__(master)
+
+        self.canvas = Canvas(self, width = width, height = height)
+        self.canvas.pack(fill = BOTH, expand = YES)
+
+        self.bind('<Configure>', self.on_resize)
+
+        self.viewport = DataViewport(self.canvas, width, height)
+    
+    def on_resize(self, event):
+        self.canvas.config(width = event.width, height = event.height)
+        self.viewport.update_position(0.0, 0.0)
+        self.viewport.resize(event.width, event.height)
+        self.viewport.draw()
+    
+    def draw(self):
+        self.viewport.draw()
