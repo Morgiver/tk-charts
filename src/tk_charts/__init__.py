@@ -292,8 +292,8 @@ class TkCharts(Frame):
     
     def on_resize(self, event):
         self.canvas.config(width = event.width, height = event.height)
-        self.viewport.update_position(0.0, 0.0)
         self.viewport.resize(event.width, event.height)
+        self.viewport.update_position(0.0, 0.0)
         self.viewport.draw()
     
     def draw(self):
