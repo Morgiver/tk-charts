@@ -13,4 +13,4 @@ The motivation behind this little project is to be able to use an easy and light
 6. ~Define and build a Y scale view panel, which will handle the Y axis control/view~
 7. ~Define and build a Data view panel~
 8. ~Define a Viewport class which will control and organise X scale view, Y scale view and Data view panel. This is the chart view.~
-9. Define and build the TkCharts Frame
+9. ~Define and build the TkCharts Frame~

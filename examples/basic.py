@@ -5,12 +5,14 @@ sys.path.append('./src')
 
 from tk_charts import TkCharts
 
+width = 500
+height = 500
 format = '%Y-%m-%d %H:%M:%S'
 
 master = Tk()
-master.geometry("1000x1000")
+master.geometry(f"{width}x{height}")
 
-chart = TkCharts(master, 1000, 1000)
+chart = TkCharts(master, width, height)
 chart.pack(fill = BOTH, expand = YES)
 chart.draw()
 
