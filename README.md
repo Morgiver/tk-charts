@@ -4,7 +4,10 @@ This package will provide a Frame containing a Canvas capable to draw simple cha
 The motivation behind this little project is to be able to use an easy and light way to draw charts in Tkinter, rather than use heavy package like matplotlib (which is a great package).
 
 ## Actual State : Iteration 0 (see [historic for past iterations](https://github.com/Morgiver/tk-charts/blob/main/iterations.md))
+All objectives for this iteration 0 are fulfilled, the package can now be integrated in a Tkinter app and show an empty chart with its X and Y scaler. 
+The chart can be resized with the Tk Window.
 
+### Objectives
 1. ~Define function to draw line, rectangle and other object taking account the reversing of Y axis.~
 2. ~Define Position class which will handle the X and Y position value~
 3. ~Define an Entity base class, providing the structure of a basic entity (canvas, draw function, position, update function, etc.)~
