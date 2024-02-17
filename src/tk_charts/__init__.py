@@ -51,3 +51,103 @@ class Panel(Entity):
 
         self.width  = width
         self.height = height
+
+class ScaleView(Panel):
+    """ ScaleView is a base class to define standard method and data for axes scaling controls"""
+    def __init__(self, canvas: Canvas, width: int, height: int) -> None:
+        super().__init__(canvas, width, height)
+
+        """ Scale is the unit per pixels """
+        self.scale = 1.0
+
+        """ Minimum value visible """
+        self.min_value = 0.0
+
+        """ Maximum value visible """
+        self.max_value = 0.0
+    
+    def update_scale(self, new_value: float):
+        self.scale = new_value
+
+class XScaleView(ScaleView):
+    """ X axis scale view """
+    def __init__(self, canvas: Canvas, width: int, height: int) -> None:
+        super().__init__(canvas, width, height)
+
+    def draw(self):
+        """ Draw the top horizontal line """
+        draw_line(
+            self.canvas,
+            self.position.x, 
+            self.position.y + self.height, 
+            self.position.x + self.width - self.height / 2,
+            self.position.y + self.height,
+            fill = 'white',
+            width = 2
+        )
+
+        """ Defining space width between every steps """
+        total_width = self.width - self.height
+        units = total_width / 10
+
+        for i in range(10):
+            if i > 0 and i < 10:
+                """ Draw the step line """
+                draw_line(
+                    self.canvas,
+                    self.position.x + i * units,
+                    self.position.y + self.height,
+                    self.position.x + i * units,
+                    self.position.y + self.height - self.height / 6,
+                    fill = 'white'
+                )
+
+                """ Draw the value text """
+                draw_text(
+                    self.canvas,
+                    self.position.x + i * units,
+                    self.position.y + self.height - self.height / 3,
+                    fill = 'white',
+                    text = i * units * self.scale
+                )
+
+class YScaleView(ScaleView):
+    """ Y scale view """
+    def __init__(self, canvas: Canvas, width: int, height: int) -> None:
+        super().__init__(canvas, width, height)
+
+    def draw(self):
+        """ Draw the left vertical line """
+        draw_line(
+            self.canvas,
+            self.position.x, 
+            self.position.y + self.width / 2, 
+            self.position.x,
+            self.position.y + self.height,
+            fill = 'white',
+            width = 2
+        )
+
+        total_height = self.height
+        units = total_height / 10
+
+        for i in range(10):
+            if i > 0 and i < 9:
+                """ Draw the step line """
+                draw_line(
+                    self.canvas,
+                    self.position.x,
+                    self.position.y + self.width + i * units,
+                    self.position.x + self.width / 6,
+                    self.position.y + self.width + i * units,
+                    fill = 'white'
+                )
+
+                """ Draw the value text """
+                draw_text(
+                    self.canvas,
+                    self.position.x + self.width / 2,
+                    self.position.y + self.width + i * units,
+                    fill = 'white',
+                    text = i * units * self.scale
+                )
