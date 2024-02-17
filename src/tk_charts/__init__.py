@@ -151,3 +151,123 @@ class YScaleView(ScaleView):
                     fill = 'white',
                     text = i * units * self.scale
                 )
+
+class DataView(Panel):
+    """ Data View """
+    def __init__(self, parent, width: int, height: int) -> None:
+        super().__init__(parent.canvas, width, height)
+        self.parent = parent
+        self.style  = 'candles'
+        self.datas  = []
+
+    def update_datas(self):
+        # TODO
+        pass
+
+    def update_x_scale(self):
+        # TODO
+        pass 
+
+    def update_y_scale(self):
+        # TODO
+        pass
+
+    def draw(self):
+        """ Draw outline borders """
+        draw_rectangle(
+            self.parent.canvas,
+            self.position.x,
+            self.position.y + self.parent.y_scale_width,
+            self.position.x + self.width,
+            self.position.y + self.height + self.parent.y_scale_width,
+            outline = 'grey'
+        )
+
+class DataViewport(Entity):
+    """ Data Viewport manage and draw all Panels (X and Y scalers and DataView) """
+    def __init__(self, canvas: Canvas, width: int, height: int) -> None:
+        super().__init__(canvas)
+
+        """ Setting scale data's """
+        self.width          = width
+        self.height         = height
+        self.x_scale_height = 50
+        self.y_scale_width  = 50
+
+        """ Dividing the Viewport in panels """
+        self.x_scale_view = XScaleView(canvas, self.width, self.x_scale_height)
+        self.y_scale_view = YScaleView(canvas, self.y_scale_width, self.height)
+        self.data_view    = DataView(self, self.width - self.y_scale_width, self.height - self.x_scale_height)
+
+        """ Updating panels positions """
+        self.update_position(self.position.x, self.position.y)
+    
+    def resize(self, width: int, height: int):
+        self.width  = width
+        self.height = height
+
+        self.x_scale_view.width = self.width
+        self.x_scale_view.height = self.x_scale_height
+
+        self.y_scale_view.width = self.y_scale_width
+        self.y_scale_view.height = self.height
+
+        self.data_view.width = self.width - self.y_scale_width
+        self.data_view.height = self.height - self.x_scale_height
+
+    def update_x_scale(self, new_value: float):
+        self.x_scale_view.update_scale(new_value)
+
+    def update_y_scale(self, new_value: float):
+        self.y_scale_view.update_scale(new_value)
+
+    def update_position(self, x: float, y: float):
+        """ Update the X and Y coordinates """
+        self.position.x = x
+        self.position.y = y
+
+        """ Updating panels positions """
+        self.data_view.update_position(
+            self.position.x,
+            self.position.y
+        )
+        
+        self.x_scale_view.update_position(
+            self.position.x, 
+            self.position.y
+        )
+
+        self.y_scale_view.update_position(
+            self.position.x + self.data_view.width,
+            self.position.y
+        )
+    
+    def reset_viewport(self):
+        """ Reseting the bac """
+        draw_rectangle(
+            self.canvas,
+            self.position.x, 
+            self.position.y,
+            self.position.x + self.width,
+            self.position.y + self.height,
+            fill = 'black'
+        )
+
+    def draw(self):
+        """ Reseting the viewport """
+        self.reset_viewport()
+
+        """ Drawing panels """
+        self.data_view.draw()
+        self.y_scale_view.draw()
+        self.x_scale_view.draw()
+
+        """ Borders Rectangle """
+        draw_rectangle(
+            self.canvas,
+            self.position.x, 
+            self.position.y,
+            self.position.x + self.width,
+            self.position.y + self.height,
+            outline = 'grey'
+        )
