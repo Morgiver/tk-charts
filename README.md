@@ -9,8 +9,8 @@ The motivation behind this little project is to be able to use an easy and light
 2. ~Define Position class which will handle the X and Y position value~
 3. ~Define an Entity base class, providing the structure of a basic entity (canvas, draw function, position, update function, etc.)~
 4. ~Define Panel base class, providing the structure of a basic panel where to draw. It will act like a new context in the Canvas. A Panel will be an Entity.~
-5. Define and build a X scale view panel, which will handle the X axis control/view
-6. Define and build a Y scale view panel, which will handle the Y axis control/view
-7. Define and build a Data view panel
-8. Define a Viewport class which will control and organise X scale view, Y scale view and Data view panel. This is the chart view.
+5. ~Define and build a X scale view panel, which will handle the X axis control/view~
+6. ~Define and build a Y scale view panel, which will handle the Y axis control/view~
+7. ~Define and build a Data view panel~
+8. ~Define a Viewport class which will control and organise X scale view, Y scale view and Data view panel. This is the chart view.~
 9. Define and build the TkCharts Frame
