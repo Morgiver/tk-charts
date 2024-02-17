@@ -1,5 +1,6 @@
 from tkinter import *
 
+""" Drawing function : Inverting Y axis in every functions """
 def draw_arc(canvas: Canvas, x1: float, y1: float, x2: float, y2: float, **kwargs):
     canvas.create_arc(x1, canvas.winfo_reqheight() - y1, x2, canvas.winfo_reqheight() - y2, **kwargs)
 
@@ -23,3 +24,27 @@ def draw_rectangle(canvas: Canvas, x1: float, y1: float, x2: float, y2: float, *
 
 def draw_text(canvas: Canvas, x: float, y: float, **kwargs):
     canvas.create_text(x, canvas.winfo_reqheight() - y, **kwargs)
+
+class Position:
+    def __init__(self, x: float = 0.0, y: float = 0.0) -> None:
+        self.x = x
+        self.y = y
+
+class Entity:
+    def __init__(self, canvas: Canvas) -> None:
+        self.canvas   = canvas
+        self.position = Position()
+
+    def update_position(self, x: float, y: float):
+        self.position.x = x
+        self.position.y = y
+
+    def draw(self):
+        pass
+
+class Panel(Entity):
+    def __init__(self, canvas: Canvas, width: int, height: int) -> None:
+        super().__init__(canvas)
+
+        self.width  = width
+        self.height = height
