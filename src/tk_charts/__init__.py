@@ -26,11 +26,13 @@ def draw_text(canvas: Canvas, x: float, y: float, **kwargs):
     canvas.create_text(x, canvas.winfo_reqheight() - y, **kwargs)
 
 class Position:
+    """ X and Y axis Position coordinate in the Canvas"""
     def __init__(self, x: float = 0.0, y: float = 0.0) -> None:
         self.x = x
         self.y = y
 
 class Entity:
+    """ Every drawable thing is an Entity and has a Canvas class, Postion class and draw function """
     def __init__(self, canvas: Canvas) -> None:
         self.canvas   = canvas
         self.position = Position()
@@ -43,6 +45,7 @@ class Entity:
         pass
 
 class Panel(Entity):
+    """ Panel is a rectangle in the Canvas defining a new Context and Origin """
     def __init__(self, canvas: Canvas, width: int, height: int) -> None:
         super().__init__(canvas)
 
