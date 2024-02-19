@@ -5,7 +5,7 @@ sys.path.append('./src')
 
 from tk_charts import TkCharts
 
-width = 500
+width  = 500
 height = 500
 format = '%Y-%m-%d %H:%M:%S'
 
