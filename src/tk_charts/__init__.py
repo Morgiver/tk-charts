@@ -75,8 +75,9 @@ class ScaleView(Panel):
 
 class XScaleView(ScaleView):
     """ X axis scale view """
-    def __init__(self, canvas: Canvas, width: int, height: int) -> None:
+    def __init__(self, parent, canvas: Canvas, width: int, height: int) -> None:
         super().__init__(canvas, width, height)
+        self.parent = parent
 
     def draw(self):
         """ Draw the top horizontal line """
@@ -91,17 +92,18 @@ class XScaleView(ScaleView):
         )
 
         """ Defining space width between every steps """
-        total_width = self.width - self.height
-        units = total_width / 10
+        total_width     = self.width - self.height
+        x_chevron_units = total_width / 10
+        x_units         = (max(self.parent.datas) - min(self.parent.datas)) / 10
 
         for i in range(10):
             if i > 0 and i < 10:
                 """ Draw the step line """
                 draw_line(
                     self.canvas,
-                    self.position.x + i * units,
+                    self.position.x + i * x_chevron_units,
                     self.position.y + self.height,
-                    self.position.x + i * units,
+                    self.position.x + i * x_chevron_units,
                     self.position.y + self.height - self.height / 6,
                     fill = 'white'
                 )
@@ -109,16 +111,17 @@ class XScaleView(ScaleView):
                 """ Draw the value text """
                 draw_text(
                     self.canvas,
-                    self.position.x + i * units,
+                    self.position.x + i * x_chevron_units,
                     self.position.y + self.height - self.height / 3,
                     fill = 'white',
-                    text = i * units * self.scale
+                    text = ''
                 )
 
 class YScaleView(ScaleView):
     """ Y scale view """
-    def __init__(self, canvas: Canvas, width: int, height: int) -> None:
+    def __init__(self, parent, canvas: Canvas, width: int, height: int) -> None:
         super().__init__(canvas, width, height)
+        self.parent = parent
 
     def draw(self):
         """ Draw the left vertical line """
@@ -133,7 +136,8 @@ class YScaleView(ScaleView):
         )
 
         total_height = self.height
-        units = total_height / 10
+        y_chevron_units = total_height / 10
+        y_units = (max(self.parent.datas) - min(self.parent.datas)) / 10
 
         for i in range(10):
             if i > 0 and i < 9:
@@ -141,9 +145,9 @@ class YScaleView(ScaleView):
                 draw_line(
                     self.canvas,
                     self.position.x,
-                    self.position.y + self.width + i * units,
+                    self.position.y + self.width + i * y_chevron_units,
                     self.position.x + self.width / 6,
-                    self.position.y + self.width + i * units,
+                    self.position.y + self.width + i * y_chevron_units,
                     fill = 'white'
                 )
 
@@ -151,30 +155,31 @@ class YScaleView(ScaleView):
                 draw_text(
                     self.canvas,
                     self.position.x + self.width / 2,
-                    self.position.y + self.width + i * units,
+                    self.position.y + self.width + i * y_chevron_units,
                     fill = 'white',
-                    text = i * units * self.scale
+                    text = y_units * i
                 )
 
 class DataView(Panel):
     """ Data View """
-    def __init__(self, parent, width: int, height: int) -> None:
-        super().__init__(parent.canvas, width, height)
+    def __init__(self, parent, canvas: Canvas, width: int, height: int) -> None:
+        super().__init__(canvas, width, height)
         self.parent = parent
-        self.style  = 'candles'
-        self.datas  = []
+        self.style  = 'line'
 
-    def update_datas(self):
-        # TODO
-        pass
+    def draw_line_style(self):
+        datas = self.parent.datas
+        x_units = self.width / len(datas)
+        y_units = self.height / max(datas) - min(datas)
 
-    def update_x_scale(self):
-        # TODO
-        pass 
+        for i in range(len(datas)):
+            if i > 0 and i < len(datas):
+                x1 = self.position.x + i * x_units
+                y1 = self.position.y + self.parent.x_scale_view.height + datas[i-1] * y_units
+                x2 = self.position.x + (i + 1) * x_units
+                y2 = self.position.y + self.parent.x_scale_view.height + datas[i] * y_units
 
-    def update_y_scale(self):
-        # TODO
-        pass
+                draw_line(self.canvas, x1, y1, x2, y2, fill = 'blue', width = 2)
 
     def draw(self):
         """ Draw outline borders """
@@ -187,6 +192,10 @@ class DataView(Panel):
             outline = 'grey'
         )
 
+        if self.style == 'line':
+            self.draw_line_style()
+
+
 class DataViewport(Entity):
     """ Data Viewport manage and draw all Panels (X and Y scalers and DataView) """
     def __init__(self, canvas: Canvas, width: int, height: int) -> None:
@@ -197,15 +206,19 @@ class DataViewport(Entity):
         self.height         = height
         self.x_scale_height = 50
         self.y_scale_width  = 50
+        self.datas          = None
 
         """ Dividing the Viewport in panels """
-        self.x_scale_view = XScaleView(canvas, self.width, self.x_scale_height)
-        self.y_scale_view = YScaleView(canvas, self.y_scale_width, self.height)
-        self.data_view    = DataView(self, self.width - self.y_scale_width, self.height - self.x_scale_height)
+        self.x_scale_view = XScaleView(self, canvas, self.width, self.x_scale_height)
+        self.y_scale_view = YScaleView(self, canvas, self.y_scale_width, self.height)
+        self.data_view    = DataView(self, canvas, self.width - self.y_scale_width, self.height - self.x_scale_height)
 
         """ Updating panels positions """
         self.update_position(self.position.x, self.position.y)
-    
+
+    def update_datas(self, datas):
+        self.datas = datas
+
     def resize(self, width: int, height: int):
         self.width  = width
         self.height = height
@@ -290,6 +303,9 @@ class TkCharts(Frame):
 
         self.viewport = DataViewport(self.canvas, width, height)
     
+    def update_datas(self, new_datas):
+        self.viewport.update_datas(new_datas)
+
     def on_resize(self, event):
         self.canvas.config(width = event.width, height = event.height)
         self.viewport.resize(event.width, event.height)
