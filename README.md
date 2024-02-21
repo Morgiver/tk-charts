@@ -3,6 +3,9 @@ This package will provide a Frame containing a Canvas capable to draw simple cha
 
 The motivation behind this little project is to be able to use an easy and light way to draw charts in Tkinter, rather than use heavy package like matplotlib (which is a great package).
 
+# Warning :
+This package is not ready to be used, it's not finished and can be fully changed.
+
 ## Actual State : Iteration 1 (see [historic for past iterations](https://github.com/Morgiver/tk-charts/blob/main/iterations.md))
 The main objective for this iteration is to correctly draw datas in the DataViewport.
 
