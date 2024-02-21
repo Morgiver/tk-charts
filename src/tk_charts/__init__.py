@@ -292,6 +292,24 @@ class DataViewport(Entity):
             outline = 'grey'
         )
 
+class XScaleWidget(Widget):
+    def __init__(self, master, widget_name = "XScaleWidget", **kwargs) -> None:
+        super().__init__(master, widget_name, **kwargs)
+
+        self.canvas = Canvas()
+
+class YScaleWidget(Widget):
+    def __init__(self, master, widget_name = "YScaleWidget", **kwargs) -> None:
+        super().__init__(master, widget_name, **kwargs)
+
+        self.canvas = Canvas()
+
+class DataChartWidget(Widget):
+    def __init__(self, master, widget_name = "DataChartWidget", **kwargs) -> None:
+        super().__init__(master, widget_name, **kwargs)
+
+        self.canvas = Canvas()
+
 class TkCharts(Frame):
     def __init__(self, master, width: int, height: int):
         super().__init__(master)
