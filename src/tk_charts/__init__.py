@@ -1,34 +1,5 @@
 from tkinter import *
 
-""" 
-    Drawing function : 
-        - Inverting Y axis in every functions
-        - Add 'Entity' tag
-"""
-def draw_arc(canvas: Canvas, x1: float, y1: float, x2: float, y2: float, **kwargs):
-    canvas.create_arc(x1, canvas.winfo_reqheight() - y1, x2, canvas.winfo_reqheight() - y2, tags = 'Entity', **kwargs)
-
-def draw_bitmap(canvas: Canvas, x: float, y: float, **kwargs):
-    canvas.create_bitmap(x, canvas.winfo_reqheight() - y, tags = 'Entity', **kwargs)
-
-def draw_image(canvas: Canvas, x: float, y: float, **kwargs):
-    canvas.create_image(x, canvas.winfo_reqheight() - y, tags = 'Entity', **kwargs)
-
-def draw_line(canvas: Canvas, x1: float, y1: float, x2: float, y2: float, **kwargs):
-    canvas.create_line(x1, canvas.winfo_reqheight() - y1, x2, canvas.winfo_reqheight() - y2, tags = 'Entity',  **kwargs)
-
-def draw_oval(canvas: Canvas, x1: float, y1: float, x2: float, y2: float, **kwargs):
-    canvas.create_oval(x1, canvas.winfo_reqheight() - y1, x2, canvas.winfo_reqheight() - y2, tags = 'Entity', **kwargs)
-
-def draw_polygon(canvas: Canvas, x1: float, y1: float, x2: float, y2: float, **kwargs):
-    canvas.create_polygon(x1, canvas.winfo_reqheight() - y1, x2, canvas.winfo_reqheight() - y2, tags = 'Entity', **kwargs)
-
-def draw_rectangle(canvas: Canvas, x1: float, y1: float, x2: float, y2: float, **kwargs):
-    canvas.create_rectangle(x1, canvas.winfo_reqheight() - y1, x2, canvas.winfo_reqheight() - y2, tags = 'Entity', **kwargs)
-
-def draw_text(canvas: Canvas, x: float, y: float, **kwargs):
-    canvas.create_text(x, canvas.winfo_reqheight() - y, tags = 'Entity', **kwargs)
-
 class Position:
     """ X and Y axis Position coordinate in the Canvas"""
     def __init__(self, x: float = 0.0, y: float = 0.0) -> None:
@@ -292,43 +263,82 @@ class DataViewport(Entity):
             outline = 'grey'
         )
 
-class XScaleWidget(Widget):
-    def __init__(self, master, widget_name = "XScaleWidget", **kwargs) -> None:
-        super().__init__(master, widget_name, **kwargs)
+class DrawFrame(Canvas):
+    def __init__(self, master, width: int, height: int, **kwargs):
+        super().__init__(master, width = width, height = height, **kwargs)
 
-        self.canvas = Canvas()
+        self.chart  = master
+        self.bind('<Button-1>', self.on_button_down)
+        self.bind('<ButtonRelease-1>', self.on_button_release)
 
-class YScaleWidget(Widget):
-    def __init__(self, master, widget_name = "YScaleWidget", **kwargs) -> None:
-        super().__init__(master, widget_name, **kwargs)
+    def draw_arc(self, x1: float, y1: float, x2: float, y2: float, **kwargs):
+        self.create_arc(x1, self.winfo_reqheight() - y1, x2, self.winfo_reqheight() - y2, tags = 'Entity', **kwargs)
 
-        self.canvas = Canvas()
+    def draw_bitmap(self, x: float, y: float, **kwargs):
+        self.create_bitmap(x, self.winfo_reqheight() - y, tags = 'Entity', **kwargs)
 
-class DataChartWidget(Widget):
-    def __init__(self, master, widget_name = "DataChartWidget", **kwargs) -> None:
-        super().__init__(master, widget_name, **kwargs)
+    def draw_image(self, x: float, y: float, **kwargs):
+        self.create_image(x, self.winfo_reqheight() - y, tags = 'Entity', **kwargs)
 
-        self.canvas = Canvas()
+    def draw_line(self, x1: float, y1: float, x2: float, y2: float, **kwargs):
+        self.create_line(x1, self.winfo_reqheight() - y1, x2, self.winfo_reqheight() - y2, tags = 'Entity',  **kwargs)
+
+    def draw_oval(self, x1: float, y1: float, x2: float, y2: float, **kwargs):
+        self.create_oval(x1, self.winfo_reqheight() - y1, x2, self.winfo_reqheight() - y2, tags = 'Entity', **kwargs)
+
+    def draw_polygon(self, x1: float, y1: float, x2: float, y2: float, **kwargs):
+        self.create_polygon(x1, self.winfo_reqheight() - y1, x2, self.winfo_reqheight() - y2, tags = 'Entity', **kwargs)
+
+    def draw_rectangle(self, x1: float, y1: float, x2: float, y2: float, **kwargs):
+        self.create_rectangle(x1, self.winfo_reqheight() - y1, x2, self.winfo_reqheight() - y2, tags = 'Entity', **kwargs)
+
+    def draw_text(self, x: float, y: float, **kwargs):
+        self.create_text(x, self.winfo_reqheight() - y, tags = 'Entity', **kwargs)
+
+    def draw(self):
+        pass
+
+    def on_button_down(self, event):
+        pass
+
+    def on_button_release(self, event):
+        pass
+
+    def rescale(self):
+        pass
+
+class XScaleFrame(DrawFrame):
+    def __init__(self, master, width: int, height: int, **kwargs) -> None:
+        super().__init__(master, width, height, **kwargs)
+
+class YScaleFrame(DrawFrame):
+    def __init__(self, master, width: int, height: int, **kwargs) -> None:
+        super().__init__(master, width, height, **kwargs)
+
+class DataChartFrame(DrawFrame):
+    def __init__(self, master, width: int, height: int, **kwargs) -> None:
+        super().__init__(master, width = width, height = height, **kwargs)
 
 class TkCharts(Frame):
-    def __init__(self, master, width: int, height: int):
+    def __init__(self, master):
         super().__init__(master)
 
-        self.canvas = Canvas(self, width = width, height = height)
-        self.canvas.pack(fill = BOTH, expand = YES)
+        self.data_chart_frame = DataChartFrame(self, 450, 450, bg = 'grey')
+        self.data_chart_frame.grid(column = 0, row = 0, sticky=N+S+E+W)
+
+        self.y_scale_frame = YScaleFrame(self, 50, 450, bg = 'black')
+        self.y_scale_frame.grid(column = 1, row = 0, sticky=N+S+E+W)
+
+        self.x_scale_frame = XScaleFrame(self, 450, 50, bg = 'black')
+        self.x_scale_frame.grid(column = 0, row = 1, sticky=N+S+E+W)
 
         self.bind('<Configure>', self.on_resize)
 
-        self.viewport = DataViewport(self.canvas, width, height)
-    
-    def update_datas(self, new_datas):
-        self.viewport.update_datas(new_datas)
-
     def on_resize(self, event):
-        self.canvas.config(width = event.width, height = event.height)
-        self.viewport.resize(event.width, event.height)
-        self.viewport.update_position(0.0, 0.0)
-        self.viewport.draw()
-    
+        self.data_chart_frame.configure(width = event.width - self.x_scale_frame.winfo_height(), height = event.height - self.y_scale_frame.winfo_width())
+        self.draw()
+
     def draw(self):
-        self.viewport.draw()
+        self.data_chart_frame.draw()
+        self.y_scale_frame.draw()
+        self.x_scale_frame.draw()

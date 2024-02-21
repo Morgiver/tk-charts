@@ -14,9 +14,9 @@ format = '%Y-%m-%d %H:%M:%S'
 master = Tk()
 master.geometry(f"{width}x{height}")
 
-chart = TkCharts(master, width, height)
+chart = TkCharts(master)
 chart.pack(fill = BOTH, expand = YES)
-chart.update_datas(datas)
-chart.draw()
+#chart.update_datas(datas)
+#chart.draw()
 
 master.mainloop()
