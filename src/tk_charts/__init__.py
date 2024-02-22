@@ -1,12 +1,18 @@
 from tkinter import *
 
+NEUTRAL         = 'NEUTRAL'
+BUTTON_RELEASED = 'BUTTON_RELEASED'
+BUTTON_DOWN     = 'BUTTON_DOWN'
+
+
 class DrawFrame(Canvas):
     def __init__(self, master, width: int, height: int, **kwargs):
         super().__init__(master, width = width, height = height, **kwargs)
 
-        self.chart  = master
-        self.bind('<Button-1>', self.on_button_down)
-        self.bind('<ButtonRelease-1>', self.on_button_release)
+        self.chart = master
+
+        self.bind('<Button-1>', self.on_left_button_down)
+        self.bind('<ButtonRelease-1>', self.on_left_button_release)
 
     def draw_arc(self, x1: float, y1: float, x2: float, y2: float, **kwargs):
         self.create_arc(x1, self.winfo_reqheight() - y1, x2, self.winfo_reqheight() - y2, tags = 'Entity', **kwargs)
@@ -35,10 +41,10 @@ class DrawFrame(Canvas):
     def draw(self):
         pass
 
-    def on_button_down(self, event):
+    def on_left_button_down(self, event):
         pass
 
-    def on_button_release(self, event):
+    def on_left_button_release(self, event):
         pass
 
     def rescale(self):
@@ -150,7 +156,7 @@ class TkCharts(Frame):
         super().__init__(master)
 
         self.datas      = None
-        self.base_data  = 435
+        self.base_data  = 500
         self.base_scale = 65
 
         self.data_chart_frame = DataChartFrame(self, self.base_data, self.base_data, highlightthickness = 0, bg = 'black')
@@ -164,6 +170,9 @@ class TkCharts(Frame):
 
         self.ctrl_frame = Frame(self, highlightthickness = 0, bg = 'black')
         self.ctrl_frame.grid(column = 1, row = 1, sticky=N+S+E+W)
+
+        # Controls states
+        self.left_button = NEUTRAL
 
         self.bind('<Configure>', self.on_resize)
 
