@@ -60,7 +60,7 @@ class XScaleFrame(DrawFrame):
             self.winfo_width(),
             self.winfo_height(),
             fill = 'white',
-            width = 1
+            width = 2
         )
 
         """ Defining space width between every steps """
@@ -99,7 +99,7 @@ class YScaleFrame(DrawFrame):
             0.0,
             self.winfo_reqheight(),
             fill = 'white',
-            width = 1
+            width = 2
         )
 
         total_height = self.winfo_height()
