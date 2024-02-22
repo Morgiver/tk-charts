@@ -107,7 +107,7 @@ class YScaleFrame(DrawFrame):
         y_units = (max(self.chart.datas) - min(self.chart.datas)) / 10
 
         for i in range(10):
-            if i > 0 and i < 9:
+            if i > 0 and i < 10:
                 """ Draw the step line """
                 self.draw_line(
                     0.0,
@@ -143,7 +143,7 @@ class DataChartFrame(DrawFrame):
                 x2 = (i + 1) * x_units
                 y2 = datas[i] * y_units
 
-                self.draw_line(x1, y1, x2, y2, fill = 'blue', width = 2)
+                self.draw_line(x1, y1, x2, y2, fill = 'blue', width = 1)
 
 class TkCharts(Frame):
     def __init__(self, master):

@@ -19,5 +19,8 @@ The main objective for this iteration is to correctly draw datas in the DataView
 7. Draw Bar dataset
 8. Build a widget that control the selection of data view type to choose between Line, Candle and Bar.
 
+#### Iteration notes:
+1. I changed the way to build Panels. Before full drawing in only one canvas, now the Chart is divided by three canvas : DataChartFrame, XScaleFrame, YScaleFrame 
+
 ## Example image
 ![Example Image](images/example.png)
