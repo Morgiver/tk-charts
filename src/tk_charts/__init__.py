@@ -149,15 +149,17 @@ class TkCharts(Frame):
     def __init__(self, master):
         super().__init__(master)
 
-        self.datas = None
+        self.datas      = None
+        self.base_data  = 435
+        self.base_scale = 65
 
-        self.data_chart_frame = DataChartFrame(self, 450, 450, highlightthickness = 0, bg = 'black')
+        self.data_chart_frame = DataChartFrame(self, self.base_data, self.base_data, highlightthickness = 0, bg = 'black')
         self.data_chart_frame.grid(column = 0, row = 0, sticky=N+S+E+W)
 
-        self.y_scale_frame = YScaleFrame(self, 50, 450, highlightthickness = 0, bg = 'black')
+        self.y_scale_frame = YScaleFrame(self, self.base_scale, self.base_data, highlightthickness = 0, bg = 'black')
         self.y_scale_frame.grid(column = 1, row = 0, sticky=N+S+E+W)
 
-        self.x_scale_frame = XScaleFrame(self, 450, 50, highlightthickness = 0, bg = 'black')
+        self.x_scale_frame = XScaleFrame(self, self.base_data, self.base_scale, highlightthickness = 0, bg = 'black')
         self.x_scale_frame.grid(column = 0, row = 1, sticky=N+S+E+W)
 
         self.ctrl_frame = Frame(self, highlightthickness = 0, bg = 'black')
@@ -169,7 +171,9 @@ class TkCharts(Frame):
         self.datas = new_datas
 
     def on_resize(self, event):
-        self.data_chart_frame.configure(width = event.width - self.x_scale_frame.winfo_height(), height = event.height - self.y_scale_frame.winfo_width())
+        self.data_chart_frame.configure(width = event.width - self.base_scale, height = event.height - self.base_scale)
+        self.y_scale_frame.configure(width = self.base_scale, height = event.height - self.base_scale)
+        self.x_scale_frame.configure(width = event.width - self.base_scale, height = self.base_scale)
         self.draw()
 
     def draw(self):
