@@ -16,7 +16,7 @@ master.geometry(f"{width}x{height}")
 
 chart = TkCharts(master)
 chart.pack(fill = BOTH, expand = YES)
-#chart.update_datas(datas)
+chart.update_datas(datas)
 #chart.draw()
 
 master.mainloop()
