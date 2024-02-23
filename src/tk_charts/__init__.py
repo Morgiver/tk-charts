@@ -106,10 +106,8 @@ class YScaleFrame(DrawFrame):
             fill = 'white',
             width = 2
         )
-
-        total_height = self.winfo_height()
-        y_chevron_units = total_height / 10
-        y_units = (self.chart.data_max_value - self.chart.data_min_value) / total_height
+        
+        y_chevron_units = self.winfo_height() / 10
 
         for i in range(10):
             if i > 0 and i < 10:
@@ -127,7 +125,7 @@ class YScaleFrame(DrawFrame):
                     25,
                     i * y_chevron_units,
                     fill = 'white',
-                    text = "{:.2f}".format(self.chart.data_min_value + (y_units * i))
+                    text = "{:.2f}".format(self.chart.convert_pixels_to_data(y_chevron_units * i))
                 )
 
 class DataChartFrame(DrawFrame):
@@ -194,7 +192,6 @@ class TkCharts(Frame):
         self.data_chart_frame.configure(width = event.width - self.base_scale, height = event.height - self.base_scale)
         self.y_scale_frame.configure(width = self.base_scale, height = event.height - self.base_scale)
         self.x_scale_frame.configure(width = event.width - self.base_scale, height = self.base_scale)
-        self.max_pixels = self.data_chart_frame.winfo_height()
 
         self.draw()
 
