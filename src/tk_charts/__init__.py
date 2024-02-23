@@ -146,9 +146,6 @@ class DataChartFrame(DrawFrame):
                 x2 = (i + 1) * x_units
                 y2 = self.chart.convert_data_to_pixels(self.chart.datas[i])
 
-                print(f"Data : {self.chart.datas[i]} Pixels : {y2}")
-                print(f"Px Converted : {self.chart.convert_pixels_to_data(y2)}")
-
                 self.draw_line(x1, y1, x2, y2, fill = 'blue', width = 1)
     
 class TkCharts(Frame):
