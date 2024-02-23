@@ -4,7 +4,6 @@ NEUTRAL         = 'NEUTRAL'
 BUTTON_RELEASED = 'BUTTON_RELEASED'
 BUTTON_DOWN     = 'BUTTON_DOWN'
 
-
 class DrawFrame(Canvas):
     def __init__(self, master, width: int, height: int, **kwargs):
         super().__init__(master, width = width, height = height, **kwargs)
@@ -72,7 +71,7 @@ class XScaleFrame(DrawFrame):
         """ Defining space width between every steps """
         total_width     = self.winfo_width()
         x_chevron_units = total_width / 10
-        x_units         = (max(self.chart.datas) - min(self.chart.datas)) / 10
+        x_units         = total_width / (max(self.chart.datas) - min(self.chart.datas))
 
         for i in range(10):
             if i > 0 and i < 10:
@@ -110,7 +109,7 @@ class YScaleFrame(DrawFrame):
 
         total_height = self.winfo_height()
         y_chevron_units = total_height / 10
-        y_units = (max(self.chart.datas) - min(self.chart.datas)) / 10
+        y_units = (self.chart.data_max_value - self.chart.data_min_value) / total_height
 
         for i in range(10):
             if i > 0 and i < 10:
@@ -128,7 +127,7 @@ class YScaleFrame(DrawFrame):
                     25,
                     i * y_chevron_units,
                     fill = 'white',
-                    text = "{:.2f}".format(y_units * i)
+                    text = "{:.2f}".format(self.chart.data_min_value + (y_units * i))
                 )
 
 class DataChartFrame(DrawFrame):
@@ -138,19 +137,20 @@ class DataChartFrame(DrawFrame):
     def draw(self):
         self.reset()
 
-        datas = self.chart.datas
-        x_units = self.winfo_width() / len(datas)
-        y_units = self.winfo_height() / max(datas) - min(datas)
-
-        for i in range(len(datas)):
-            if i > 0 and i < len(datas):
+        x_units = self.winfo_width() / len(self.chart.datas)
+        
+        for i in range(len(self.chart.datas)):
+            if i > 0 and i < len(self.chart.datas):
                 x1 = i * x_units
-                y1 = datas[i-1] * y_units
+                y1 = self.chart.convert_data_to_pixels(self.chart.datas[i-1])
                 x2 = (i + 1) * x_units
-                y2 = datas[i] * y_units
+                y2 = self.chart.convert_data_to_pixels(self.chart.datas[i])
+
+                print(f"Data : {self.chart.datas[i]} Pixels : {y2}")
+                print(f"Px Converted : {self.chart.convert_pixels_to_data(y2)}")
 
                 self.draw_line(x1, y1, x2, y2, fill = 'blue', width = 1)
-
+    
 class TkCharts(Frame):
     def __init__(self, master):
         super().__init__(master)
@@ -171,18 +171,34 @@ class TkCharts(Frame):
         self.ctrl_frame = Frame(self, highlightthickness = 0, bg = 'black')
         self.ctrl_frame.grid(column = 1, row = 1, sticky=N+S+E+W)
 
+        # Scaling parameters
+        self.data_min_value = 0.0
+        self.data_max_value = 0.0
+
         # Controls states
         self.left_button = NEUTRAL
 
         self.bind('<Configure>', self.on_resize)
 
+    def convert_data_to_pixels(self, data: float):
+        data_units = self.data_chart_frame.winfo_height() / (self.data_max_value - self.data_min_value)
+        return (data - self.data_min_value) * data_units
+
+    def convert_pixels_to_data(self, px: float):
+        pixel_units = (self.data_max_value - self.data_min_value) / self.data_chart_frame.winfo_height()
+        return (pixel_units * px) + self.data_min_value
+    
     def update_datas(self, new_datas):
         self.datas = new_datas
+        self.data_min_value = min(self.datas)
+        self.data_max_value = max(self.datas)
 
     def on_resize(self, event):
         self.data_chart_frame.configure(width = event.width - self.base_scale, height = event.height - self.base_scale)
         self.y_scale_frame.configure(width = self.base_scale, height = event.height - self.base_scale)
         self.x_scale_frame.configure(width = event.width - self.base_scale, height = self.base_scale)
+        self.max_pixels = self.data_chart_frame.winfo_height()
+
         self.draw()
 
     def draw(self):
