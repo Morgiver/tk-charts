@@ -8,10 +8,13 @@ class DrawFrame(Canvas):
     def __init__(self, master, width: int, height: int, **kwargs):
         super().__init__(master, width = width, height = height, **kwargs)
 
-        self.chart = master
+        self.chart          = master
+        self.mouse_motion   = (0, 0)
+        self.mouse_position = (0, 0)
 
         self.bind('<Button-1>', self.on_left_button_down)
         self.bind('<ButtonRelease-1>', self.on_left_button_release)
+        self.bind('<Motion>', self.on_mouse_motion)
 
     def draw_arc(self, x1: float, y1: float, x2: float, y2: float, **kwargs):
         self.create_arc(x1, self.winfo_reqheight() - y1, x2, self.winfo_reqheight() - y2, tags = 'Entity', **kwargs)
@@ -46,6 +49,10 @@ class DrawFrame(Canvas):
     def on_left_button_release(self, event):
         pass
 
+    def on_mouse_motion(self, event):
+        self.mouse_motion = (event.x - self.mouse_position[0], event.y - self.mouse_position[1])
+        self.mouse_position = (event.x, event.y)
+
     def rescale(self):
         pass
 
@@ -69,28 +76,27 @@ class XScaleFrame(DrawFrame):
         )
 
         """ Defining space width between every steps """
-        total_width     = self.winfo_width()
-        x_chevron_units = total_width / 10
-        x_units         = total_width / (max(self.chart.datas) - min(self.chart.datas))
+        x_chevron_units = self.winfo_width() / self.chart.data_max_range
 
-        for i in range(10):
-            if i > 0 and i < 10:
-                """ Draw the step line """
-                self.draw_line(
-                    i * x_chevron_units,
-                    self.winfo_height(),
-                    i * x_chevron_units,
-                    self.winfo_height() - 10,
-                    fill = 'white'
-                )
+        for i in range(self.chart.data_max_range):
+            if i > 0 and i < self.chart.data_max_range:
+                if i % 3 == 0:
+                    """ Draw the step line """
+                    self.draw_line(
+                        i * x_chevron_units,
+                        self.winfo_height(),
+                        i * x_chevron_units,
+                        self.winfo_height() - 10,
+                        fill = 'white'
+                    )
 
-                """ Draw the value text """
-                self.draw_text(
-                    i * x_chevron_units,
-                    self.winfo_height() - 25,
-                    fill = 'white',
-                    text = "{:.2f}".format(x_units * i)
-                )
+                    """ Draw the value text """
+                    self.draw_text(
+                        i * x_chevron_units,
+                        self.winfo_height() - 25,
+                        fill = 'white',
+                        text = i
+                    )
 
 class YScaleFrame(DrawFrame):
     def __init__(self, master, width: int, height: int, **kwargs) -> None:
@@ -127,6 +133,9 @@ class YScaleFrame(DrawFrame):
                     fill = 'white',
                     text = "{:.2f}".format(self.chart.convert_pixels_to_data(y_chevron_units * i))
                 )
+
+    def on_mouse_motion(self, event):
+        super().on_mouse_motion(event)
 
 class DataChartFrame(DrawFrame):
     def __init__(self, master, width: int, height: int, **kwargs) -> None:
@@ -169,6 +178,7 @@ class TkCharts(Frame):
         # Scaling parameters
         self.data_min_value = 0.0
         self.data_max_value = 0.0
+        self.data_max_range = 25
 
         # Controls states
         self.left_button = NEUTRAL
@@ -184,7 +194,7 @@ class TkCharts(Frame):
         return (pixel_units * px) + self.data_min_value
     
     def update_datas(self, new_datas):
-        self.datas = new_datas
+        self.datas          = new_datas
         self.data_min_value = min(self.datas)
         self.data_max_value = max(self.datas)
 
