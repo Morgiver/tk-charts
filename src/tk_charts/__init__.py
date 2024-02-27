@@ -78,9 +78,9 @@ class XScaleFrame(DrawFrame):
         """ Defining space width between every steps """
         x_chevron_units = self.winfo_width() / self.chart.data_max_range
 
-        for i in range(self.chart.data_max_range):
-            if i > 0 and i < self.chart.data_max_range:
-                if i % 3 == 0:
+        for i in range(self.chart.current_index, self.chart.current_index + self.chart.data_max_range):
+            if i < self.chart.data_max_range:
+                if i % 10 == 0:
                     """ Draw the step line """
                     self.draw_line(
                         i * x_chevron_units,
@@ -178,7 +178,8 @@ class TkCharts(Frame):
         # Scaling parameters
         self.data_min_value = 0.0
         self.data_max_value = 0.0
-        self.data_max_range = 25
+        self.data_max_range = 250
+        self.current_index  = 0
 
         # Controls states
         self.left_button = NEUTRAL
